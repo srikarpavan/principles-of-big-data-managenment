@@ -1,0 +1,52 @@
+Query 1: IPL Trending Tweets from Top 10 Geo Locations
+val geoloc = spark.sql("SELECT user.name,user.screen_name,user.id,geo.coordinates[0] As latt,geo.coordinates[1] As long from table where geo is not null")
+
+Query 2: IPL tweets 
+scala> val retwname = sqlContext.sql("SELECT retweeted_status.user.name,retweeted_status.id, retweeted_status.text, COUNT(*) as total FROM table WHERE retweeted_status.user is not null GROUP BY retweeted_status.user.name,retweeted_status.id, retweeted_status.text ORDER BY total desc LIMIT 5")
+
+Query3: IPL Trending Tweets from Different Languages
+scala> var language = spark.sql("SELECT user.lang, COUNT(*) as cnt FROM table GROUP BY user.lang ORDER BY cnt DESC LIMIT 25");
+
+Query4: Top Trended Cricket Match hashtags
+scala> val hashtags = spark.sql("SELECT LOWER(hashtags.text) As Hashtags, COUNT(*) AS total_count FROM table LATERAL VIEW EXPLODE(entities.hashtags) AS hashtags GROUP BY LOWER(hashtags.text) ORDER BY total_count DESC LIMIT 20")
+
+Query5: the most power team tweets
+%sql
+select cause,count(*)
+from
+(
+select regexp_extract(text,'srh|csk|kxp|mi|dc|rr|kkr|rcb fuels',0) as cause from table
+)
+where nullif(cause,"") is not null
+group by cause
+
+Query6: Analysis on Twitter Sources
+ scala> val sources = spark.sql("SELECT sum(case when lower(source) like '%android%' then 1 else 0 end)android, sum(case when lower(source) like '%iphone%' then 1 else 0 end)iphone, sum(case when lower(source) like '%ipad%' then 1 else 0 end)ipad, sum(case when lower(source) like '%web%' then 1 else 0 end)web, sum(case when lower(source) like '%tweetdeck%' then 1 else 0 end)Tweetdeck, sum(case when lower(source) like '%tweetbot%' then 1 else 0 end)Tweetbot, sum(case when lower(source) like '%www.sprinklr.com%' then 1 else 0 end)Sprinklr, sum(case when lower(source) like '%www.socialnewsdesk.com%' then 1 else 0 end)SocialNewsDesk, sum(case when lower(source) like '%instagram.com%' then 1 else 0 end)Instagram, sum(case when lower(source) like '%facebook.com%' then 1 else 0 end)Facebook from table")
+
+Query7: Analysis on Cricket Players
+scala> var players = spark.sql("SELECT SUM(case when text like '%Hetmyer%' then 1 else 0 end)Hetmyer,SUM(case when text like '%Umesh%' then 1 else 0 end)Umesh,SUM(case when text like '%Kohli%' then 1 else 0 end)Kohli,SUM(case when text like '%IPL2019%' then 1 else 0 end)IPL2019,SUM(case when text like '%Kane%' then 1 else 0 end)KaneWilliamson from table")
+
+Query8: IPL Tweets from verified Users
+scala> var status = spark.sql("SELECT SUM(case when user.verified=true then 1 else 0 end)Verified,SUM(case when user.verified=false then 1 else 0 end)Unverified from table")
+This query is used to know the tweets trending from verified/unverified users
+
+Query9:
+scala> val  temp= spark.sql("SELECT substring(user.created_at,5,3) as month, count(user.id) from table group by month");
+
+Query 10:Tweets from Number of countries
+SELECT case when place.country='India' then 'in'
+when place.country='United States' then 'us'
+when place.country='United Kingdom' then 'gb'
+when place.country='Brasil' then 'br'
+when place.country='South Africa' then 'za'
+when place.country='Australia' then 'au'
+when place.country='Italia' then 'it'
+when place.country='France' then 'fr'
+when place.country='Nigeria' then 'ne'
+when place.country='Canada' then 'ca'
+when place.country='Russia' then 'ru'
+when place.country='China' then 'cn'
+when place.country='Greenland ' then 'gl'
+else place.country end as country
+,count(*) AS count FROM table where place.country is not null GROUP BY place.country ORDER BY count DESC limit 10
+ 
