@@ -1,0 +1,12 @@
+{"month":"Oct","count(user.id AS `id`)":8241}
+{"month":"Sep","count(user.id AS `id`)":7425}
+{"month":"Dec","count(user.id AS `id`)":8500}
+{"month":"Aug","count(user.id AS `id`)":7686}
+{"month":"May","count(user.id AS `id`)":9927}
+{"month":"Jun","count(user.id AS `id`)":7199}
+{"month":"Feb","count(user.id AS `id`)":8379}
+{"month":"Nov","count(user.id AS `id`)":8314}
+{"month":"Mar","count(user.id AS `id`)":10872}
+{"month":"Jan","count(user.id AS `id`)":9511}
+{"month":"Apr","count(user.id AS `id`)":12813}
+{"month":"Jul","count(user.id AS `id`)":8347}
